@@ -1,35 +1,63 @@
 import React, {useState} from 'react';
 import {useMsal} from '@azure/msal-react';
 import {loginRequest} from '../../authConfig';
-import {AuthenticationResult} from '@azure/msal-browser';
+import {PagedResponse} from '../../models/pagedResponse';
+import {Company} from '../../models/company';
 
 export type GetCompaniesButtonProps = {}
 
 export default function GetCompaniesButton({}: GetCompaniesButtonProps) {
-    const { instance, accounts, inProgress } = useMsal();
+    const { instance, accounts} = useMsal();
     const [accessToken, setAccessToken] = useState<string>('');
+    const [companies, setCompanies] = useState<Array<Company>>([]);
 
-    function RequestAccessToken() {
+    const RequestAccessToken = async () => {
         const request = {
             ...loginRequest,
             account: accounts[0]
         };
 
-        // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-        instance.acquireTokenSilent(request).then((response: AuthenticationResult) => {
-            console.log(response.accessToken);
+        try {
+            const response = await instance.acquireTokenSilent(request);
             setAccessToken(response.accessToken);
-        }).catch((e) => {
-            instance.acquireTokenPopup(request).then((response: AuthenticationResult) => {
-                setAccessToken(response.accessToken);
-            });
-        });
-    }
+            return response.accessToken;
+        } catch (error) {
+            const response = await instance.acquireTokenPopup(request);
+            setAccessToken(response.accessToken);
+            return response.accessToken;
+        }
+    };
 
 
-    function getCompanies() {
-        RequestAccessToken();
-    }
+    const getCompanies: () => Promise<PagedResponse<Company> | null> = async () => {
+        const accessToken = await RequestAccessToken();
+        const headers = new Headers();
+        const bearer = `Bearer ${accessToken}`;
+        headers.append("Authorization", bearer);
 
-    return (<button onClick={getCompanies}>Get Companies</button>);
+        const options = {
+            method: 'GET',
+            headers: headers
+        };
+
+        const response = await fetch('https://fixzyapi20220830171341.azurewebsites.net/companies', options)
+        return response.ok ? response.json() : null;
+    };
+
+    const onCompanyButtonClicked = async () => {
+        const companiesResponse = await getCompanies();
+        if (companiesResponse) {
+            setCompanies(companiesResponse.data);
+        }
+    };
+
+    return (
+        <>
+        <button onClick={onCompanyButtonClicked}>Get Companies</button>
+
+            <ul>
+                {companies.map(company => <li key={company.id}>{company.name}</li>)}
+            </ul>
+        </>
+    );
 }
