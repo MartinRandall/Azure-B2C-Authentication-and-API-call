@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {useMsal} from '@azure/msal-react';
-import {loginRequest} from '../../authConfig';
-import {PagedResponse} from '../../models/pagedResponse';
-import {Company} from '../../models/company';
+import {scopes} from '../auth/authConfig';
+import {PagedResponse} from '../models/pagedResponse';
+import {Company} from '../models/company';
 
 export type GetCompaniesButtonProps = {}
 
@@ -13,7 +13,7 @@ export default function GetCompaniesButton({}: GetCompaniesButtonProps) {
 
     const RequestAccessToken = async () => {
         const request = {
-            ...loginRequest,
+            ...scopes,
             account: accounts[0]
         };
 

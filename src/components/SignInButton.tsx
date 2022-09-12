@@ -1,11 +1,11 @@
 import React from "react";
 import {useMsal} from "@azure/msal-react";
-import {loginRequest} from "../authConfig";
+import {scopes} from "../auth/authConfig";
 import Button from "react-bootstrap/Button";
 import {IPublicClientApplication} from '@azure/msal-browser';
 
 function handleLogin(instance: IPublicClientApplication) {
-    instance.loginRedirect(loginRequest).catch(e => {
+    instance.loginRedirect(scopes).catch(e => {
         console.error(e);
     });
 }
@@ -17,7 +17,6 @@ export const SignInButton = () => {
     const {instance} = useMsal();
 
     return (
-        <Button variant="secondary" className="ml-auto" onClick={() => handleLogin(instance)}>Sign in using
-            Redirect</Button>
+        <Button variant="secondary" className="ml-auto" onClick={() => handleLogin(instance)}>Sign in</Button>
     );
 }

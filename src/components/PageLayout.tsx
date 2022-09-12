@@ -13,10 +13,10 @@ export const PageLayout = (props: any) => {
     return (
         <>
             <Navbar bg="primary" variant="dark">
-                <a className="navbar-brand" href="/">MSAL React Tutorial</a>
+                <a className="navbar-brand" href="/">Fixzy Admin App</a>
                 { isAuthenticated ? <SignOutButton /> : <SignInButton /> }
             </Navbar>
-            <h5>Welcome to the Microsoft Authentication Library For React Tutorial</h5>
+            <h5>Company List</h5>
             <br />
             <br />
             {props.children}

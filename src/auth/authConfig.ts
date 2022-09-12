@@ -10,6 +10,6 @@ export const msalConfig = {
     }
 };
 
-export const loginRequest = {
+export const scopes = {
     scopes: ["api://3b86d6b8-62bf-4072-82d1-76cf959ff6c2/access_as_user"]
 };
