@@ -20,6 +20,7 @@ export default function GetCompaniesButton({}: GetCompaniesButtonProps) {
         try {
             const response = await instance.acquireTokenSilent(request);
             setAccessToken(response.accessToken);
+            console.log(response.accessToken);
             return response.accessToken;
         } catch (error) {
             const response = await instance.acquireTokenPopup(request);
