@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import {IPublicClientApplication} from '@azure/msal-browser';
 
 function handleLogin(instance: IPublicClientApplication) {
-    instance.loginRedirect(scopes).catch(e => {
+    instance.loginRedirect({scopes: ["openid", ...scopes.scopes]}).catch(e => {
         console.error(e);
     });
 }
